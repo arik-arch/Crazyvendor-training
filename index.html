@@ -835,6 +835,26 @@
     box-shadow:0 5px 12px rgba(248,143,51,.36);
   }
   .vd-link svg{width:15px;height:15px;flex:0 0 auto}
+
+  /* תג שגיאה בכותרת סרטון */
+  .err-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:26px;height:26px;
+    border-radius:7px;
+    background:#FEEBEE;
+    border:1px solid rgba(211,47,47,.28);
+    vertical-align:-6px;
+    margin-left:8px;
+    flex:0 0 auto;
+  }
+  .err-badge svg{width:16px;height:16px;color:#D32F2F;display:block}
+  html[data-theme="dark"] .err-badge{
+    background:rgba(211,47,47,.16);
+    border-color:rgba(255,120,120,.35);
+  }
+  html[data-theme="dark"] .err-badge svg{color:#FF7A7A}
 </style>
 </head>
 <body>
@@ -1002,7 +1022,8 @@ const TOPICS = [
       {
         title: "שגיאה נפוצה בבקשת מחיר (GET RATE) ופתרון",
         description: "זיהוי השגיאה הנפוצה בבקשת מחיר במערכת ואופן הפתרון שלה.",
-        youtubeId: "dstUAEN9iL8"
+        youtubeId: "dstUAEN9iL8",
+        badge: "error"
       }
       // ▼ סרטונים נוספים — מוסיפים כאן ▼
     ]
@@ -1138,6 +1159,12 @@ const ICONS = {
 };
 
 
+/* תג אזהרה אופציונלי בכותרת סרטון */
+const BADGES = {
+  error: `<span class="err-badge" title="שגיאה"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.6v5.2"/><path d="M12 16.4h.01"/></svg></span>`
+};
+function badgeFor(v){ return v.badge && BADGES[v.badge] ? BADGES[v.badge] : ""; }
+
 /* בניית תיבת פרטים אופציונלית מתחת לסרטון */
 function detailsBlock(v){
   if((!v.details || !v.details.length) && !v.linkUrl) return "";
@@ -1196,7 +1223,7 @@ TOPICS.forEach((topic, i) => {
         </div>
         <div class="video-meta">
           <span class="video-num">סרטון ${String(n + 1).padStart(2, "0")}</span>
-          <h3>${v.title}</h3>
+          <h3>${badgeFor(v)}${v.title}</h3>
           ${v.description ? `<p>${v.description}</p>` : ""}
           ${detailsBlock(v)}
         </div>
@@ -1244,6 +1271,7 @@ if (firstBtn) firstBtn.click();
         topicIcon: topic.icon,
         details: v.details,
         detailsTitle: v.detailsTitle,
+        badge: v.badge,
         linkUrl: v.linkUrl,
         linkText: v.linkText,
         num: n + 1
@@ -1287,7 +1315,7 @@ if (firstBtn) firstBtn.click();
         </div>
         <div class="video-meta">
           <span class="result-topic">${esc(v.topicTitle)}</span>
-          <h3>${highlight(v.title, q.trim())}</h3>
+          <h3>${badgeFor(v)}${highlight(v.title, q.trim())}</h3>
           ${v.description ? `<p>${highlight(v.description, q.trim())}</p>` : ""}
           ${detailsBlock(v)}
         </div>
