@@ -21,6 +21,19 @@
     --tape:#F88F33;
     --line:#E2E3DD;
     --radius:14px;
+    --header-bg:#171A26;
+    --icon-bg:linear-gradient(145deg,#FFFFFF,#EFF1EC);
+    --icon-shadow:0 2px 4px rgba(23,26,38,.10), inset 0 1px 0 #fff;
+  }
+  html[data-theme="dark"]{
+    --ink:#EEF0F6;
+    --ink-soft:#9AA0B4;
+    --paper:#0F1119;
+    --card:#191C28;
+    --line:#2B2F3F;
+    --header-bg:#080A11;
+    --icon-bg:linear-gradient(145deg,#262A38,#1B1E2A);
+    --icon-shadow:0 2px 6px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -33,7 +46,7 @@
 
   /* ===== פס עליון בסגנון תווית משלוח ===== */
   header{
-    background:var(--ink);
+    background:var(--header-bg);
     color:#fff;
     padding:0;
     border-bottom:6px solid var(--tape);
@@ -145,6 +158,39 @@
     color:#fff;
     box-shadow:4px 4px 0 var(--tape);
   }
+  .btn-label{display:flex;align-items:center;gap:11px;min-width:0}
+  .topic-icon{
+    flex:0 0 auto;
+    width:38px;height:38px;
+    display:grid;place-items:center;
+    border-radius:11px;
+    background:var(--icon-bg);
+    box-shadow:var(--icon-shadow);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .topic-icon svg{width:25px;height:25px;display:block}
+  .topic-btn:hover .topic-icon{transform:translateY(-2px) scale(1.05);box-shadow:0 5px 10px rgba(23,26,38,.16)}
+  .topic-btn.active .topic-icon{
+    background:var(--icon-bg);
+    box-shadow:0 3px 8px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .topic-btn.soon .topic-icon{
+    background:transparent;
+    border:1px dashed var(--line);
+    box-shadow:none;
+    opacity:.75;
+  }
+  .head-icon{
+    display:inline-grid;place-items:center;
+    width:52px;height:52px;
+    border-radius:15px;
+    background:var(--icon-bg);
+    box-shadow:var(--icon-shadow);
+    vertical-align:middle;
+    margin-left:14px;
+  }
+  .head-icon svg{width:33px;height:33px;display:block}
+  .panel-head h2{display:flex;align-items:center}
   .topic-btn .count{
     font-family:'Space Mono',monospace;
     font-size:11px;
@@ -299,6 +345,143 @@
     .brand-logo{height:46px}
     .panel-head h2{font-size:26px}
   }
+
+  body{transition:background .25s ease, color .25s ease}
+  .theme-toggle{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.16);
+    color:#fff;
+    border-radius:30px;
+    padding:9px 16px;
+    cursor:pointer;
+    font-family:'Heebo',sans-serif;
+    font-size:13.5px;
+    font-weight:500;
+    transition:background .15s, border-color .15s;
+  }
+  .theme-toggle:hover{background:rgba(255,255,255,.15);border-color:var(--brand-orange)}
+  .theme-toggle:focus-visible{outline:3px solid var(--brand-green-soft);outline-offset:2px}
+  .theme-toggle svg{width:17px;height:17px;flex:0 0 auto}
+  .header-right{display:flex;align-items:center;gap:22px}
+  @media (max-width:860px){
+    .header-right{gap:0}
+    .theme-toggle{padding:8px 13px;font-size:12.5px}
+  }
+
+  /* ===== אפקטים וחיים ===== */
+
+  /* רקע עדין ונושם מאחורי הדף */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background:
+      radial-gradient(620px circle at 12% 8%,  rgba(37,211,102,.10), transparent 62%),
+      radial-gradient(560px circle at 88% 78%, rgba(248,143,51,.09), transparent 60%);
+    animation:breathe 16s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{transform:scale(1) translateY(0);opacity:1}
+    50%{transform:scale(1.12) translateY(-14px);opacity:.72}
+  }
+
+  /* פס כתום נע בתחתית הכותרת */
+  header{position:relative;overflow:hidden}
+  header::after{
+    content:"";
+    position:absolute;
+    bottom:-6px;left:-40%;
+    width:40%;height:6px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);
+    animation:sweep 6s ease-in-out infinite;
+  }
+  @keyframes sweep{
+    0%{left:-40%}
+    55%,100%{left:120%}
+  }
+
+  /* כניסה מדורגת של כרטיסי הסרטונים */
+  .panel.visible .video-card{
+    opacity:0;
+    animation:cardIn .5s cubic-bezier(.22,.9,.3,1) forwards;
+  }
+  .panel.visible .video-card:nth-child(1){animation-delay:.04s}
+  .panel.visible .video-card:nth-child(2){animation-delay:.11s}
+  .panel.visible .video-card:nth-child(3){animation-delay:.18s}
+  .panel.visible .video-card:nth-child(4){animation-delay:.25s}
+  .panel.visible .video-card:nth-child(5){animation-delay:.32s}
+  .panel.visible .video-card:nth-child(n+6){animation-delay:.38s}
+  @keyframes cardIn{
+    from{opacity:0;transform:translateY(22px) scale(.97)}
+    to{opacity:1;transform:none}
+  }
+
+  /* הרמת כרטיס במעבר עכבר */
+  .video-card{
+    transition:transform .28s cubic-bezier(.22,.9,.3,1), box-shadow .28s ease, border-color .28s ease;
+  }
+  .video-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--brand-green-soft);
+    box-shadow:0 14px 32px rgba(23,26,38,.16);
+  }
+  html[data-theme="dark"] .video-card:hover{box-shadow:0 14px 34px rgba(0,0,0,.55)}
+
+  /* פס ירוק-כתום שנפתח בראש הכרטיס */
+  .video-card{position:relative}
+  .video-card::before{
+    content:"";
+    position:absolute;
+    top:0;right:0;left:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--brand-green-soft),var(--brand-orange));
+    transform:scaleX(0);
+    transform-origin:right;
+    transition:transform .35s cubic-bezier(.22,.9,.3,1);
+    z-index:2;
+  }
+  .video-card:hover::before{transform:scaleX(1)}
+
+  /* פעימה עדינה על כפתור הניגון של סרטון שממתין */
+  .video-placeholder svg{animation:pulse 2.8s ease-in-out infinite}
+  @keyframes pulse{
+    0%,100%{transform:scale(1);opacity:.5}
+    50%{transform:scale(1.09);opacity:.85}
+  }
+
+  /* כותרת הנושא נכנסת בהחלקה */
+  .panel.visible .panel-head{animation:headIn .45s ease both}
+  @keyframes headIn{
+    from{opacity:0;transform:translateX(18px)}
+    to{opacity:1;transform:none}
+  }
+
+  /* ניצוץ קל על האייקון בכותרת */
+  .head-icon{transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+  .panel-head h2:hover .head-icon{transform:rotate(-7deg) scale(1.07)}
+
+  /* מונה הסרטונים קופץ קלות בהפעלה */
+  .topic-btn.active .count{animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes pop{
+    0%{transform:scale(.6)}
+    60%{transform:scale(1.18)}
+    100%{transform:scale(1)}
+  }
+
+  /* לחיצה על חוצץ */
+  .topic-btn:active{transform:scale(.985)}
+
+  /* כיבוי מלא למי שביקש להפחית תנועה */
+  @media (prefers-reduced-motion:reduce){
+    body::before, header::after,
+    .video-placeholder svg, .panel.visible .video-card,
+    .panel.visible .panel-head, .topic-btn.active .count{animation:none !important}
+    .panel.visible .video-card{opacity:1}
+    .video-card:hover{transform:none}
+  }
 </style>
 </head>
 <body>
@@ -313,6 +496,10 @@
         <p>סרטונים קצרים שמלמדים אתכם לעבוד עם המערכת — צעד אחר צעד</p>
       </div>
     </div>
+    <div class="header-right">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="החלפת מצב תצוגה">
+      <span id="themeIcon"></span><span id="themeLabel">מצב כהה</span>
+    </button>
     <div class="header-art" aria-hidden="true">
       <svg width="215" height="112" viewBox="0 0 230 120" xmlns="http://www.w3.org/2000/svg">
         <!-- מדרגות למידה בצבעי הלוגו -->
@@ -337,6 +524,7 @@
       </svg>
       <span class="art-caption">STEP&nbsp;BY&nbsp;STEP</span>
     </div>
+  </div>
   </div>
 </header>
 
@@ -372,6 +560,7 @@
 const TOPICS = [
   {
     id: "shipping",
+    icon: "box",
     title: "משלוחים",
     description: "כל מה שקשור לביצוע משלוחים במערכת — הקמה ידנית ומשלוחים מהזמנות של אטסי, איביי ושופיפיי.",
     videos: [
@@ -400,6 +589,7 @@ const TOPICS = [
   },
   {
     id: "technical",
+    icon: "gear",
     title: "הגדרות חשבון וחיבור חנות",
     description: "הגדרת החשבון שלכם במערכת וחיבור חנויות אטסי, איביי ושופיפיי.",
     videos: [
@@ -418,6 +608,7 @@ const TOPICS = [
   },
   {
     id: "troubleshooting",
+    icon: "alert",
     title: "שגיאות ופתרון בעיות",
     description: "נתקלתם בהודעת שגיאה או שמשהו לא עובד כמו שצריך? כאן תמצאו את הפתרונות.",
     videos: [
@@ -427,6 +618,7 @@ const TOPICS = [
 
   {
     id: "webinars",
+    icon: "webinar",
     title: "וובינרים",
     description: "הקלטות מלאות של וובינרים והדרכות מעמיקות.",
     videos: [
@@ -442,6 +634,7 @@ const TOPICS = [
   /* ▼ נושאים עתידיים — כשתהיו מוכנים, מוחקים את soon: true ומוסיפים סרטונים ▼ */
   {
     id: "coming-soon-1",
+    icon: "plus",
     title: "נושא נוסף — בקרוב",
     description: "",
     soon: true,
@@ -450,6 +643,88 @@ const TOPICS = [
 ];
 
 /* ============ מכאן והלאה אין צורך לגעת ============ */
+
+
+/* אייקונים תלת-ממדיים — SVG עם גרדיאנטים בצבעי המותג */
+/* ===== מצב כהה / בהיר ===== */
+(function(){
+  const moon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z"/></svg>`;
+  const sun  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2 12h2.2M19.8 12H22M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>`;
+  const btn = document.getElementById("themeToggle");
+  const icon = document.getElementById("themeIcon");
+  const label = document.getElementById("themeLabel");
+  let saved = null;
+  try { saved = localStorage.getItem("cv-theme"); } catch(e){}
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  let theme = saved || (prefersDark ? "dark" : "light");
+
+  function apply(t){
+    document.documentElement.setAttribute("data-theme", t);
+    icon.innerHTML = t === "dark" ? sun : moon;
+    label.textContent = t === "dark" ? "מצב בהיר" : "מצב כהה";
+    btn.setAttribute("aria-pressed", t === "dark");
+    try { localStorage.setItem("cv-theme", t); } catch(e){}
+  }
+  apply(theme);
+  btn.addEventListener("click", () => {
+    theme = theme === "dark" ? "light" : "dark";
+    apply(theme);
+  });
+})();
+
+const ICONS = {
+  // קופסת משלוח איזומטרית
+  box: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bxT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB667"/><stop offset="1" stop-color="#F88F33"/></linearGradient>
+      <linearGradient id="bxL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2FE07A"/><stop offset="1" stop-color="#12A34A"/></linearGradient>
+    </defs>
+    <path d="M24 5 43 14.5 24 24 5 14.5Z" fill="url(#bxT)"/>
+    <path d="M5 14.5 24 24v19L5 33.5Z" fill="#1EB35C"/>
+    <path d="M43 14.5 24 24v19l19-9.5Z" fill="#148A45"/>
+    <path d="M14.5 9.7 33.5 19.3v6L29 23.2v-6Z" fill="#FFFFFF" opacity=".92"/>
+  </svg>`,
+  // גלגל שיניים מוטה עם עומק
+  gear: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gfT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#43E88B"/><stop offset="1" stop-color="#148A45"/></linearGradient>
+    </defs>
+    <g transform="translate(0,3)">
+      <path d="M24 4.5l4.2 2.1 4.6-.9 2.4 4 4.3 1.9-.5 4.7 2.9 3.7-2.9 3.7.5 4.7-4.3 1.9-2.4 4-4.6-.9L24 35.5l-4.2-2.1-4.6.9-2.4-4-4.3-1.9.5-4.7L6.1 20l2.9-3.7-.5-4.7 4.3-1.9 2.4-4 4.6.9Z" fill="#0E6E36" opacity=".55"/>
+    </g>
+    <path d="M24 4.5l4.2 2.1 4.6-.9 2.4 4 4.3 1.9-.5 4.7 2.9 3.7-2.9 3.7.5 4.7-4.3 1.9-2.4 4-4.6-.9L24 35.5l-4.2-2.1-4.6.9-2.4-4-4.3-1.9.5-4.7L6.1 20l2.9-3.7-.5-4.7 4.3-1.9 2.4-4 4.6.9Z" fill="url(#gfT)"/>
+    <circle cx="24" cy="20" r="7.2" fill="#0B5A2C"/>
+    <circle cx="24" cy="20" r="7.2" fill="none" stroke="#FFFFFF" stroke-width="1.6" opacity=".5"/>
+    <path d="M17.5 12.5a9 9 0 0 1 9-2.2" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".55"/>
+  </svg>`,
+  // משולש אזהרה תלת-ממדי
+  alert: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="alT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC684"/><stop offset="1" stop-color="#F88F33"/></linearGradient>
+    </defs>
+    <path d="M24 8.5 44 39H24Z" fill="#C46A18"/>
+    <path d="M24 8.5 4 39h20Z" fill="url(#alT)"/>
+    <path d="M24 8.5 44 39H4Z" fill="#F88F33" opacity=".25"/>
+    <rect x="21.9" y="19" width="4.2" height="10.5" rx="2.1" fill="#FFFFFF"/>
+    <circle cx="24" cy="33.6" r="2.5" fill="#FFFFFF"/>
+  </svg>`,
+  // מסך וובינר עם עומק
+  webinar: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="wbS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3AD97F"/><stop offset="1" stop-color="#148A45"/></linearGradient>
+    </defs>
+    <rect x="6" y="10" width="36" height="24" rx="4" fill="#0E6E36"/>
+    <rect x="6" y="7.5" width="36" height="24" rx="4" fill="url(#wbS)"/>
+    <path d="M20.5 14.4v10.2l9.2-5.1Z" fill="#FFFFFF"/>
+    <path d="M24 31.5v6" stroke="#0E6E36" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M15 40.5h18" stroke="#F88F33" stroke-width="3.6" stroke-linecap="round"/>
+  </svg>`,
+  // פלוס תלת-ממדי
+  plus: `<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20.4 12h7.2v8.4H36v7.2h-8.4V36h-7.2v-8.4H12v-7.2h8.4Z" fill="#B9BCC6"/>
+    <path d="M20.4 9.5h7.2v8.4H36v7.2h-8.4v8.4h-7.2v-8.4H12v-7.2h8.4Z" fill="#D8DAE1"/>
+  </svg>`
+};
 
 const btnWrap = document.getElementById("topicButtons");
 const panels  = document.getElementById("panels");
@@ -460,7 +735,7 @@ TOPICS.forEach((topic, i) => {
   // כפתור חוצץ
   const btn = document.createElement("button");
   btn.className = "topic-btn" + (topic.soon ? " soon" : "");
-  btn.innerHTML = `<span>${topic.title}</span><span class="count">${topic.soon ? "···" : topic.videos.length}</span>`;
+  btn.innerHTML = `<span class="btn-label"><span class="topic-icon">${ICONS[topic.icon] || ""}</span>${topic.title}</span><span class="count">${topic.soon ? "···" : topic.videos.length}</span>`;
   if (!topic.soon) {
     btn.addEventListener("click", () => activate(topic.id, btn));
     btn.setAttribute("aria-controls", "panel-" + topic.id);
@@ -498,7 +773,7 @@ TOPICS.forEach((topic, i) => {
 
   panel.innerHTML = `
     <div class="panel-head">
-      <h2>${topic.title}</h2>
+      <h2><span class="head-icon">${ICONS[topic.icon] || ""}</span>${topic.title}</h2>
       ${topic.description ? `<p>${topic.description}</p>` : ""}
     </div>
     ${videosHtml}`;
