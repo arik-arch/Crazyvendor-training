@@ -683,6 +683,99 @@
   @media (max-width:860px){
     .bg-orbs span:nth-child(4){display:none}
   }
+
+  /* ===== שורת חיפוש ===== */
+  .search-wrap{
+    position:relative;
+    margin-bottom:22px;
+  }
+  .search-box{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:30px;
+    padding:12px 18px;
+    transition:border-color .18s, box-shadow .18s;
+  }
+  .search-box:focus-within{
+    border-color:var(--brand-green);
+    box-shadow:0 0 0 4px rgba(37,211,102,.15);
+  }
+  .search-box svg{width:19px;height:19px;color:var(--ink-soft);flex:0 0 auto}
+  .search-box input{
+    flex:1;
+    border:0;
+    outline:0;
+    background:transparent;
+    font-family:'Heebo',sans-serif;
+    font-size:15.5px;
+    color:var(--ink);
+    min-width:0;
+  }
+  .search-box input::placeholder{color:var(--ink-soft);opacity:.85}
+  .search-clear{
+    border:0;
+    background:var(--paper);
+    color:var(--ink-soft);
+    width:24px;height:24px;
+    border-radius:50%;
+    cursor:pointer;
+    display:none;
+    place-items:center;
+    font-size:15px;
+    line-height:1;
+    flex:0 0 auto;
+    transition:background .15s,color .15s;
+  }
+  .search-clear:hover{background:var(--brand-orange);color:#fff}
+  .search-clear.on{display:grid}
+
+  /* תצוגת תוצאות */
+  #searchResults{display:none}
+  #searchResults.on{display:block}
+  body.searching .panel{display:none !important}
+
+  .search-status{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .search-status b{color:var(--brand-green);font-weight:600}
+  .result-topic{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:500;
+    color:var(--brand-green);
+    background:rgba(37,211,102,.12);
+    border-radius:20px;
+    padding:3px 11px;
+    margin-bottom:4px;
+    align-self:flex-start;
+  }
+  mark{
+    background:rgba(248,143,51,.35);
+    color:inherit;
+    border-radius:3px;
+    padding:0 2px;
+  }
+  .no-results{
+    border:2px dashed var(--line);
+    border-radius:var(--radius);
+    padding:54px 26px;
+    text-align:center;
+    color:var(--ink-soft);
+  }
+  .no-results strong{
+    display:block;
+    font-family:'Rubik',sans-serif;
+    font-size:19px;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
 </style>
 </head>
 <body>
@@ -745,7 +838,17 @@
   </nav>
 
   <!-- אזור הסרטונים -->
-  <main id="panels"></main>
+  <main>
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+        <input type="search" id="searchInput" placeholder="חיפוש סרטון לפי שם או נושא…" aria-label="חיפוש סרטונים" autocomplete="off">
+        <button class="search-clear" id="searchClear" type="button" aria-label="ניקוי החיפוש">✕</button>
+      </div>
+    </div>
+    <div id="searchResults"></div>
+    <div id="panels"></div>
+  </main>
 
 </div>
 
@@ -791,6 +894,11 @@ const TOPICS = [
         title: "תיקון תיאור פריט (UNASSIGN ORDER)",
         description: "שחרור הזמנה מהשיוך שלה ותיקון תיאור הפריט במערכת.",
         youtubeId: "PlUqiuoIcYw"
+      },
+      {
+        title: "ייפוי כוח עבור פדקס",
+        description: "הפקת ייפוי כוח (POA) הנדרש לעבודה מול FedEx.",
+        youtubeId: "3cq9ahNBKPo"
       }
       // להוסיף עוד סרטון? מעתיקים בלוק ומדביקים כאן
     ]
@@ -1017,6 +1125,114 @@ function activate(id, btn) {
 // פתיחת הנושא הראשון כברירת מחדל
 const firstBtn = btnWrap.querySelector(".topic-btn:not(.soon)");
 if (firstBtn) firstBtn.click();
+
+/* ===== חיפוש סרטונים ===== */
+(function(){
+  const input   = document.getElementById("searchInput");
+  const clearBtn= document.getElementById("searchClear");
+  const results = document.getElementById("searchResults");
+  if(!input) return;
+
+  // בניית מאגר לחיפוש
+  const INDEX = [];
+  TOPICS.forEach(topic => {
+    if(topic.soon) return;
+    topic.videos.forEach((v, n) => {
+      INDEX.push({
+        title: v.title,
+        description: v.description || "",
+        youtubeId: v.youtubeId,
+        topicTitle: topic.title,
+        topicId: topic.id,
+        topicIcon: topic.icon,
+        num: n + 1
+      });
+    });
+  });
+
+  const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const norm = s => s.toLowerCase().replace(/["'׳״\-–—()]/g,"").replace(/\s+/g," ").trim();
+
+  function highlight(text, q){
+    const safe = esc(text);
+    if(!q) return safe;
+    const i = norm(safe).indexOf(q);
+    if(i < 0) return safe;
+    // התאמה משוערת על הטקסט המקורי
+    const re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + ")", "gi");
+    return safe.replace(re, "<mark>$1</mark>");
+  }
+
+  function render(q){
+    const nq = norm(q);
+    const hits = INDEX.filter(v =>
+      norm(v.title).includes(nq) ||
+      norm(v.description).includes(nq) ||
+      norm(v.topicTitle).includes(nq)
+    );
+
+    if(hits.length === 0){
+      results.innerHTML = `<div class="no-results"><strong>לא נמצאו סרטונים</strong>נסו מילת חיפוש אחרת, או בחרו נושא מהרשימה</div>`;
+      return;
+    }
+
+    const cards = hits.map(v => `
+      <article class="video-card">
+        <div class="video-frame">
+          ${v.youtubeId
+            ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.youtubeId}?rel=0&controls=1&fs=1&playsinline=1" title="${esc(v.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`
+            : `<div class="video-placeholder">${ICONS.plus ? "" : ""}<span class="badge">הסרטון בדרך אליכם</span></div>`
+          }
+        </div>
+        <div class="video-meta">
+          <span class="result-topic">${esc(v.topicTitle)}</span>
+          <h3>${highlight(v.title, q.trim())}</h3>
+          ${v.description ? `<p>${highlight(v.description, q.trim())}</p>` : ""}
+        </div>
+      </article>`).join("");
+
+    results.innerHTML =
+      `<div class="search-status">נמצאו <b>${hits.length}</b> סרטונים עבור "${esc(q.trim())}"</div>
+       <div class="video-grid">${cards}</div>`;
+  }
+
+  let t;
+  function onInput(){
+    const q = input.value;
+    clearBtn.classList.toggle("on", q.length > 0);
+    clearTimeout(t);
+    t = setTimeout(() => {
+      if(q.trim().length === 0){
+        document.body.classList.remove("searching");
+        results.classList.remove("on");
+        results.innerHTML = "";
+        return;
+      }
+      document.body.classList.add("searching");
+      results.classList.add("on");
+      render(q);
+    }, 160);
+  }
+
+  input.addEventListener("input", onInput);
+  input.addEventListener("keydown", e => { if(e.key === "Escape") reset(); });
+  clearBtn.addEventListener("click", reset);
+
+  function reset(){
+    input.value = "";
+    clearBtn.classList.remove("on");
+    document.body.classList.remove("searching");
+    results.classList.remove("on");
+    results.innerHTML = "";
+    input.focus();
+  }
+
+  // לחיצה על חוצץ מנקה חיפוש
+  document.querySelectorAll(".topic-btn").forEach(b => b.addEventListener("click", () => {
+    if(input.value) reset();
+  }));
+})();
+
 </script>
 
 </body>
