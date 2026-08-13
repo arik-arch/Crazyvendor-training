@@ -858,11 +858,11 @@
 
   /* צילום הודעת שגיאה — תצוגה מוגדלת */
   .err-shot{
-    margin:14px -18px 0;
-    border-top:1px solid var(--line);
-    border-bottom:1px solid var(--line);
+    margin-top:12px;
+    border:1px solid var(--line);
     border-right:4px solid #D32F2F;
-    padding:12px 18px 14px;
+    border-radius:10px;
+    padding:11px 12px 12px;
     background:rgba(211,47,47,.05);
   }
   .err-shot .es-label{
@@ -884,8 +884,8 @@
     transition:transform .22s ease, box-shadow .22s ease;
   }
   .err-shot img:hover{
-    transform:scale(1.03);
-    box-shadow:0 8px 22px rgba(0,0,0,.26);
+    box-shadow:0 6px 16px rgba(0,0,0,.24);
+    filter:brightness(1.06);
   }
   .es-zoom{
     display:block;
@@ -896,12 +896,6 @@
   }
   html[data-theme="dark"] .err-shot{background:rgba(211,47,47,.10)}
   html[data-theme="dark"] .err-shot .es-label{color:#FF7A7A}
-
-  /* כרטיס עם צילום שגיאה תופס רוחב כפול ברשת */
-  .video-card.wide{grid-column:span 2}
-  @media (max-width:900px){
-    .video-card.wide{grid-column:span 1}
-  }
 
   /* תצוגה מוגדלת בלחיצה */
   .lightbox{
@@ -1295,7 +1289,7 @@ TOPICS.forEach((topic, i) => {
     videosHtml = `<div class="empty-topic"><strong>עדיין אין סרטונים בנושא הזה</strong>הסרטונים יתווספו בקרוב</div>`;
   } else {
     videosHtml = `<div class="video-grid">` + topic.videos.map((v, n) => `
-      <article class="video-card${v.errorShot ? " wide" : ""}">
+      <article class="video-card">
         <div class="video-frame">
           ${v.youtubeId
             ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.youtubeId}?rel=0&controls=1&fs=1&playsinline=1" title="${v.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`
@@ -1404,7 +1398,7 @@ if (firstBtn) firstBtn.click();
     }
 
     const cards = hits.map(v => `
-      <article class="video-card${v.errorShot ? " wide" : ""}">
+      <article class="video-card">
         <div class="video-frame">
           ${v.youtubeId
             ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.youtubeId}?rel=0&controls=1&fs=1&playsinline=1" title="${esc(v.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`
