@@ -8,19 +8,24 @@
 <title>מרכז ההדרכה — CRAZY VENDOR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Heebo:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Assistant:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#171A26;
     --ink-soft:#4A4E60;
-    --paper:#F6F7F4;
+    --paper:#F4F6F2;
     --card:#FFFFFF;
     --brand-green:#148A45;
     --brand-green-soft:#25D366;
     --brand-orange:#F88F33;
     --tape:#F88F33;
     --line:#E2E3DD;
-    --radius:14px;
+    --radius:20px;
+    --radius-sm:13px;
+    --elev-1:0 1px 2px rgba(16,20,32,.05), 0 2px 8px rgba(16,20,32,.045);
+    --elev-2:0 2px 4px rgba(16,20,32,.05), 0 14px 34px rgba(16,20,32,.11);
+    --hairline:rgba(16,20,32,.07);
+    --glass:rgba(255,255,255,.72);
     --header-bg:#171A26;
     --icon-bg:linear-gradient(145deg,#FFFFFF,#EFF1EC);
     --icon-shadow:0 2px 4px rgba(23,26,38,.10), inset 0 1px 0 #fff;
@@ -28,17 +33,21 @@
   html[data-theme="dark"]{
     --ink:#EEF0F6;
     --ink-soft:#9AA0B4;
-    --paper:#0F1119;
-    --card:#191C28;
+    --paper:#0A0C12;
+    --card:#14171F;
     --line:#2B2F3F;
-    --header-bg:#080A11;
+    --header-bg:#07090F;
+    --elev-1:0 1px 2px rgba(0,0,0,.4), 0 2px 10px rgba(0,0,0,.3);
+    --elev-2:0 2px 6px rgba(0,0,0,.45), 0 16px 40px rgba(0,0,0,.55);
+    --hairline:rgba(255,255,255,.07);
+    --glass:rgba(20,23,31,.72);
     --icon-bg:linear-gradient(145deg,#262A38,#1B1E2A);
     --icon-shadow:0 2px 6px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    font-family:'Heebo',sans-serif;
+    font-family:'Assistant',sans-serif;
     background:var(--paper);
     color:var(--ink);
     min-height:100vh;
@@ -49,12 +58,23 @@
     background:var(--header-bg);
     color:#fff;
     padding:0;
-    border-bottom:6px solid var(--tape);
+    border-bottom:1px solid rgba(255,255,255,.09);
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+  header::before{
+    content:"";
+    position:absolute;
+    bottom:0;left:0;right:0;
+    height:2px;
+    background:linear-gradient(90deg,var(--brand-green-soft),var(--brand-orange),var(--brand-green-soft));
+    z-index:3;
   }
   .header-inner{
     max-width:1240px;
     margin:0 auto;
-    padding:26px 28px 22px;
+    padding:18px 30px 17px;
     display:flex;
     align-items:center;
     justify-content:space-between;
@@ -69,17 +89,18 @@
   }
   .brand-eyebrow{
     font-family:'Rubik',sans-serif;
-    font-weight:900;
-    font-size:13px;
-    letter-spacing:2.5px;
+    font-weight:800;
+    font-size:10.5px;
+    letter-spacing:3.4px;
     color:var(--brand-green-soft);
   }
   .brand-eyebrow span{color:var(--brand-orange)}
   .brand-text h1{
     font-family:'Rubik',sans-serif;
-    font-weight:700;
-    font-size:26px;
-    line-height:1.1;
+    font-weight:800;
+    font-size:25px;
+    line-height:1.05;
+    letter-spacing:-.6px;
   }
   .brand-text p{
     color:#B8BCCB;
@@ -95,7 +116,7 @@
   }
   .header-art svg{display:block}
   .header-art .art-caption{
-    font-family:'Space Mono',monospace;
+    font-family:'JetBrains Mono',monospace;
     font-size:10px;
     letter-spacing:2px;
     color:#8A8FA3;
@@ -111,25 +132,27 @@
   .layout{
     max-width:1240px;
     margin:0 auto;
-    padding:32px 28px 80px;
+    padding:34px 30px 90px;
     display:grid;
-    grid-template-columns:270px 1fr;
-    gap:32px;
+    grid-template-columns:262px 1fr;
+    gap:34px;
     align-items:start;
   }
 
   /* ===== חוצצים בצד ===== */
   nav.topics{
     position:sticky;
-    top:24px;
+    top:104px;
   }
   .topics-label{
-    font-family:'Space Mono',monospace;
-    font-size:11px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
     color:var(--ink-soft);
-    letter-spacing:2px;
-    margin-bottom:12px;
-    padding-right:4px;
+    letter-spacing:2.6px;
+    text-transform:uppercase;
+    margin-bottom:11px;
+    padding-right:6px;
+    opacity:.8;
   }
   .topic-btn{
     display:flex;
@@ -139,25 +162,40 @@
     width:100%;
     text-align:right;
     background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:15px 18px;
-    margin-bottom:10px;
+    border:1px solid var(--hairline);
+    border-radius:var(--radius-sm);
+    padding:13px 15px;
+    margin-bottom:7px;
+    box-shadow:var(--elev-1);
+    position:relative;
+    overflow:hidden;
     cursor:pointer;
-    font-family:'Heebo',sans-serif;
+    font-family:'Assistant',sans-serif;
     font-size:15.5px;
     font-weight:500;
     color:var(--ink);
     transition:border-color .15s, transform .15s, box-shadow .15s;
   }
-  .topic-btn:hover{border-color:var(--brand-green);transform:translateX(-3px)}
+  .topic-btn::after{
+    content:"";
+    position:absolute;
+    top:14%;bottom:14%;right:0;
+    width:3px;
+    border-radius:3px 0 0 3px;
+    background:var(--brand-green-soft);
+    transform:scaleY(0);
+    transition:transform .22s cubic-bezier(.22,.9,.3,1);
+  }
+  .topic-btn:hover::after{transform:scaleY(1)}
+  .topic-btn:hover{border-color:var(--hairline);box-shadow:var(--elev-2)}
   .topic-btn:focus-visible{outline:3px solid var(--brand-green);outline-offset:2px}
   .topic-btn.active{
-    background:var(--brand-green);
-    border-color:var(--brand-green);
+    background:linear-gradient(135deg,#1AA354,#0F7A3B);
+    border-color:transparent;
     color:#fff;
-    box-shadow:4px 4px 0 var(--tape);
+    box-shadow:0 6px 18px rgba(16,138,69,.32);
   }
+  .topic-btn.active::after{transform:scaleY(1);background:var(--brand-orange)}
   .btn-label{display:flex;align-items:center;gap:11px;min-width:0}
   .topic-icon{
     flex:0 0 auto;
@@ -192,13 +230,14 @@
   .head-icon svg{width:33px;height:33px;display:block}
   .panel-head h2{display:flex;align-items:center}
   .topic-btn .count{
-    font-family:'Space Mono',monospace;
+    font-family:'JetBrains Mono',monospace;
     font-size:11px;
     background:var(--paper);
     color:var(--ink-soft);
-    border-radius:20px;
-    padding:2px 9px;
-    min-width:28px;
+    border-radius:999px;
+    padding:3px 9px;
+    min-width:26px;
+    font-weight:500;
     text-align:center;
   }
   .topic-btn.active .count{background:rgba(255,255,255,.18);color:#fff}
@@ -224,27 +263,30 @@
   .panel-head h2{
     font-family:'Rubik',sans-serif;
     font-weight:900;
-    font-size:32px;
-    line-height:1.15;
+    font-size:38px;
+    line-height:1.05;
+    letter-spacing:-1.4px;
   }
   .panel-head p{
     color:var(--ink-soft);
-    font-size:16px;
-    margin-top:8px;
-    max-width:640px;
-    font-weight:300;
+    font-size:16.5px;
+    line-height:1.6;
+    margin-top:10px;
+    max-width:620px;
+    font-weight:400;
   }
 
   .video-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));
-    gap:22px;
+    grid-template-columns:repeat(auto-fill, minmax(330px, 1fr));
+    gap:20px;
   }
   .video-card{
     background:var(--card);
-    border:1px solid var(--line);
+    border:1px solid var(--hairline);
     border-radius:var(--radius);
     overflow:hidden;
+    box-shadow:var(--elev-1);
     display:flex;
     flex-direction:column;
   }
@@ -274,7 +316,7 @@
       var(--ink);
   }
   .video-placeholder .badge{
-    font-family:'Space Mono',monospace;
+    font-family:'JetBrains Mono',monospace;
     font-size:11px;
     letter-spacing:2px;
     border:1px dashed #4A4E60;
@@ -282,7 +324,7 @@
   }
   .video-placeholder svg{opacity:.5}
   .video-meta{
-    padding:16px 18px 18px;
+    padding:15px 17px 17px;
     display:flex;
     flex-direction:column;
     gap:6px;
@@ -291,7 +333,9 @@
   .video-meta h3{
     font-family:'Rubik',sans-serif;
     font-weight:700;
-    font-size:17px;
+    font-size:17.5px;
+    line-height:1.3;
+    letter-spacing:-.35px;
   }
   .video-meta p{
     color:var(--ink-soft);
@@ -300,7 +344,7 @@
     line-height:1.5;
   }
   .video-num{
-    font-family:'Space Mono',monospace;
+    font-family:'JetBrains Mono',monospace;
     font-size:11px;
     color:var(--brand-green);
     letter-spacing:1px;
@@ -352,11 +396,11 @@
     background:rgba(255,255,255,.08);
     border:1px solid rgba(255,255,255,.16);
     color:#fff;
-    border-radius:30px;
-    padding:9px 16px;
+    border-radius:999px;
+    padding:8px 15px;
     cursor:pointer;
-    font-family:'Heebo',sans-serif;
-    font-size:13.5px;
+    font-family:'Assistant',sans-serif;
+    font-size:13px;
     font-weight:500;
     transition:background .15s, border-color .15s;
   }
@@ -424,9 +468,9 @@
     transition:transform .28s cubic-bezier(.22,.9,.3,1), box-shadow .28s ease, border-color .28s ease;
   }
   .video-card:hover{
-    transform:translateY(-6px);
-    border-color:var(--brand-green-soft);
-    box-shadow:0 14px 32px rgba(23,26,38,.16);
+    transform:translateY(-5px);
+    border-color:var(--hairline);
+    box-shadow:var(--elev-2);
   }
   html[data-theme="dark"] .video-card:hover{box-shadow:0 14px 34px rgba(0,0,0,.55)}
 
@@ -548,7 +592,7 @@
     -webkit-background-clip:text;
     background-clip:text;
     -webkit-text-fill-color:transparent;
-    animation:shine 7s ease-in-out infinite;
+    animation:shine 11s ease-in-out infinite;
   }
   .brand-eyebrow span{color:inherit}
   @keyframes shine{
@@ -604,10 +648,10 @@
     inset:-50px;
     z-index:-2;
     pointer-events:none;
-    opacity:.8;
+    opacity:.55;
     background-image:
-      linear-gradient(to left, rgba(20,138,69,.13) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(20,138,69,.13) 1px, transparent 1px);
+      linear-gradient(to left, rgba(20,138,69,.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(20,138,69,.07) 1px, transparent 1px);
     background-size:52px 52px;
     animation:gridDrift 18s linear infinite;
     -webkit-mask-image:radial-gradient(circle at 50% 40%, #000 20%, transparent 78%);
@@ -631,7 +675,7 @@
     position:absolute;
     border-radius:50%;
     filter:blur(38px);
-    opacity:.55;
+    opacity:.34;
     will-change:transform;
   }
   html[data-theme="dark"] .bg-orbs span{opacity:.40;filter:blur(46px)}
@@ -692,11 +736,14 @@
   .search-box{
     display:flex;
     align-items:center;
-    gap:11px;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:30px;
-    padding:12px 18px;
+    gap:12px;
+    background:var(--glass);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--hairline);
+    border-radius:999px;
+    padding:14px 20px;
+    box-shadow:var(--elev-1);
     transition:border-color .18s, box-shadow .18s;
   }
   .search-box:focus-within{
@@ -709,7 +756,7 @@
     border:0;
     outline:0;
     background:transparent;
-    font-family:'Heebo',sans-serif;
+    font-family:'Assistant',sans-serif;
     font-size:15.5px;
     color:var(--ink);
     min-width:0;
@@ -750,8 +797,8 @@
     font-size:12px;
     font-weight:500;
     color:var(--brand-green);
-    background:rgba(37,211,102,.12);
-    border-radius:20px;
+    background:rgba(37,211,102,.11);
+    border-radius:999px;
     padding:3px 11px;
     margin-bottom:4px;
     align-self:flex-start;
@@ -811,7 +858,7 @@
     text-align:left;
     word-break:break-word;
   }
-  .vd-val.num{font-family:'Space Mono',monospace;direction:ltr;letter-spacing:.5px}
+  .vd-val.num{font-family:'JetBrains Mono',monospace;direction:ltr;letter-spacing:.5px}
 
   /* קישור חיצוני בתוך תיבת הפרטים */
   .vd-link{
@@ -953,6 +1000,59 @@
   .vd-note svg{width:16px;height:16px;flex:0 0 auto;color:var(--brand-orange);margin-top:2px}
   .vd-note a{color:var(--brand-green);font-weight:600;text-decoration:none;border-bottom:1px solid currentColor}
   .vd-note a:hover{color:var(--brand-orange)}
+
+  /* ===== נגן עם תמונת פתיחה (נטען רק בלחיצה) ===== */
+  .poster{
+    position:absolute;
+    inset:0;
+    width:100%;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    background-color:#0C0E14;
+    background-size:cover;
+    background-position:center;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+  .poster::before{
+    content:"";
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(8,10,17,.10),rgba(8,10,17,.52));
+    transition:background .28s ease;
+  }
+  .poster:hover::before{background:linear-gradient(180deg,rgba(8,10,17,.22),rgba(8,10,17,.62))}
+  .poster:focus-visible{outline:3px solid var(--brand-green-soft);outline-offset:-3px}
+  .play-btn{
+    position:relative;
+    width:60px;height:60px;
+    border-radius:50%;
+    background:rgba(255,255,255,.94);
+    display:grid;place-items:center;
+    box-shadow:0 6px 22px rgba(0,0,0,.42);
+    transition:transform .26s cubic-bezier(.34,1.56,.64,1), background .2s;
+  }
+  .play-btn svg{width:23px;height:23px;color:#0F7A3B;margin-right:2px}
+  .poster:hover .play-btn{transform:scale(1.12);background:#fff}
+  .poster:hover .play-btn svg{color:var(--brand-orange)}
+
+  /* קוד מסלול במקום מספור גנרי */
+  .video-code{
+    display:inline-flex;
+    align-items:center;
+    font-family:'Assistant',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.2px;
+    color:var(--brand-green);
+    background:rgba(37,211,102,.11);
+    border:1px solid rgba(37,211,102,.20);
+    border-radius:999px;
+    padding:3px 11px;
+    align-self:flex-start;
+  }
+  html[data-theme="dark"] .video-code{background:rgba(37,211,102,.14);color:#4FE38C}
 </style>
 </head>
 <body>
@@ -1295,6 +1395,17 @@ function errorShotBlock(v){
   </div>`;
 }
 
+/* מסגרת הסרטון: תמונת פתיחה שנטענת לנגן מלא רק בלחיצה */
+function frameFor(v, title){
+  if(!v.youtubeId){
+    return `<div class="video-placeholder">${playIcon}<span class="badge">הסרטון בדרך אליכם</span></div>`;
+  }
+  const play = `<span class="play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6L19 12z"/></svg></span>`;
+  return `<button class="poster" type="button" data-yt="${v.youtubeId}"
+      style="background-image:url('https://i.ytimg.com/vi/${v.youtubeId}/hqdefault.jpg')"
+      aria-label="הפעלת הסרטון: ${title}">${play}</button>`;
+}
+
 /* קובץ להורדה */
 function fileBlock(v){
   if(!v.fileData) return "";
@@ -1364,13 +1475,10 @@ TOPICS.forEach((topic, i) => {
     videosHtml = `<div class="video-grid">` + topic.videos.map((v, n) => `
       <article class="video-card">
         <div class="video-frame">
-          ${v.youtubeId
-            ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.youtubeId}?rel=0&controls=1&fs=1&playsinline=1" title="${v.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`
-            : `<div class="video-placeholder">${playIcon}<span class="badge">הסרטון בדרך אליכם</span></div>`
-          }
+          ${frameFor(v, v.title)}
         </div>
         <div class="video-meta">
-          <span class="video-num">סרטון ${String(n + 1).padStart(2, "0")}</span>
+          <span class="video-code">סרטון ${n + 1}</span>
           <h3>${badgeFor(v)}${v.title}</h3>
           ${v.description ? `<p>${v.description}</p>` : ""}
           ${errorShotBlock(v)}
@@ -1401,6 +1509,15 @@ function activate(id, btn) {
 const firstBtn = btnWrap.querySelector(".topic-btn:not(.soon)");
 if (firstBtn) firstBtn.click();
 
+
+/* ===== טעינת נגן יוטיוב בלחיצה ===== */
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".poster");
+  if(!btn) return;
+  const id = btn.dataset.yt;
+  const frame = btn.parentElement;
+  frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&controls=1&fs=1&playsinline=1&autoplay=1" title="נגן וידאו" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+});
 
 /* ===== הגדלת צילומי שגיאה ===== */
 (function(){
@@ -1479,12 +1596,10 @@ if (firstBtn) firstBtn.click();
     const cards = hits.map(v => `
       <article class="video-card">
         <div class="video-frame">
-          ${v.youtubeId
-            ? `<iframe src="https://www.youtube-nocookie.com/embed/${v.youtubeId}?rel=0&controls=1&fs=1&playsinline=1" title="${esc(v.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>`
-            : `<div class="video-placeholder">${ICONS.plus ? "" : ""}<span class="badge">הסרטון בדרך אליכם</span></div>`
-          }
+          ${frameFor(v, esc(v.title))}
         </div>
         <div class="video-meta">
+          <span class="video-code">סרטון ${v.num}</span>
           <span class="result-topic">${esc(v.topicTitle)}</span>
           <h3>${badgeFor(v)}${highlight(v.title, q.trim())}</h3>
           ${v.description ? `<p>${highlight(v.description, q.trim())}</p>` : ""}
